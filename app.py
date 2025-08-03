@@ -18,10 +18,10 @@ SYSTEM_PROMPT = "You are a helpful assistant."
 
 # Simple auth flow
 @cl.password_auth_callback
-async def login(username: str, password: str) -> bool:
-    if USERS.get(username) == password:
+async def login(email: str, password: str) -> bool:
+    if (metadata := USERS.get(email)) and metadata["password"] == password:
         return cl.User(
-            identifier=username, metadata={"role": "admin", "provider": "credentials"}
+            identifier=metadata["user_name"], metadata={"role": "admin", "provider": "credentials"}
         )
 
     return None
