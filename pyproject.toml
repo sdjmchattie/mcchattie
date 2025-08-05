@@ -1,7 +1,7 @@
 [project]
-name = "mcchattie"
+name = "McChattie"
 version = "0.1.0"
-description = "Add your description here"
+description = "A chat interface for OpenAI API."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

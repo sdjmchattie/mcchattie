@@ -1,0 +1,12 @@
+services:
+  chainlit:
+    build: .
+    container_name: chainlit-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./users.json:/app/users.json:ro
+    env_file:
+      - .env
+    restart: unless-stopped
