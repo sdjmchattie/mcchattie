@@ -26,12 +26,18 @@ async def login(email: str, password: str) -> bool:
 
     return None
 
+
 @cl.on_chat_start
 async def start():
     cl.user_session.set("message_history", [{"role": "system", "content": SYSTEM_PROMPT}])   # In-memory chat history
     await cl.Message(
         content="Hi! How can I help you today?"
     ).send()
+
+
+@cl.on_chat_resume
+async def on_chat_resume(thread):
+    pass
 
 
 @cl.on_message

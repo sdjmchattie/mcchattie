@@ -1,12 +1,47 @@
 services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: chainlit
+      POSTGRES_PASSWORD: chainlit
+      POSTGRES_DB: chainlit
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      SERVICES: s3
+    ports:
+      - 4566:4566
+    volumes:
+      - ./localstack-script.sh:/etc/localstack/init/ready.d/script.sh
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
   chainlit:
     build: .
     container_name: chainlit-app
+    depends_on:
+      - db
+      - localstack
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: "postgresql://chainlit:chainlit@db:5432/chainlit"
+      BUCKET_NAME: my-bucket
+      APP_AWS_ACCESS_KEY: random-key
+      APP_AWS_SECRET_KEY: random-key
+      APP_AWS_REGION: eu-central-1
+      DEV_AWS_ENDPOINT: http://localstack:4566
     ports:
       - "8000:8000"
     volumes:
       - ./.env:/app/.env:ro
       - ./users.json:/app/users.json:ro
-    env_file:
-      - .env
     restart: unless-stopped
+
+volumes:
+  pgdata:
