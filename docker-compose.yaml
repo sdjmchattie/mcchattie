@@ -19,7 +19,8 @@ services:
       - 4566:4566
     volumes:
       - ./localstack-script.sh:/etc/localstack/init/ready.d/script.sh
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - /var/run/docker.sock:/var/run/docker.sock
+      - localstack:/var/lib/localstack
 
   chainlit:
     build: .
@@ -44,4 +45,5 @@ services:
     restart: unless-stopped
 
 volumes:
+  localstack:
   pgdata:
