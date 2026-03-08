@@ -78,6 +78,24 @@ def _s3_public_url(key: str) -> str:
     return f"https://{bucket}.s3.{region}.amazonaws.com/{key}"
 
 
+def _upload_user_elements(elements) -> None:
+    """Upload user-uploaded files to S3 and set el.url so Chainlit persists the URL."""
+    if not elements:
+        return
+    s3 = _s3_client()
+    bucket = os.getenv("BUCKET_NAME", "")
+    for el in elements:
+        path = getattr(el, "path", None)
+        if not path:
+            continue
+        filename = el.name or os.path.basename(path)
+        mime = el.mime or mimetypes.guess_type(filename)[0] or "application/octet-stream"
+        key = f"uploads/{uuid.uuid4()}/{filename}"
+        with open(path, "rb") as f:
+            s3.put_object(Bucket=bucket, Key=key, Body=f.read(), ContentType=mime)
+        el.url = _s3_public_url(key)
+
+
 def _execute_tool(name: str, arguments_json: str, file_elements: list) -> str:
     try:
         args = json.loads(arguments_json)
@@ -118,6 +136,7 @@ async def on_chat_resume(thread):
 
 
 async def handle_message(message: cl.Message):
+    _upload_user_elements(message.elements)
     message_history = cl.user_session.get("message_history", [])
     message_history.append({"role": "user", "content": build_user_content(message)})
 
