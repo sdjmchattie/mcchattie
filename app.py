@@ -14,7 +14,7 @@ with open(USERS_FILE) as f:
     USERS = json.load(f)
 
 # System prompt controlling the assistant's role/behaviour
-SYSTEM_PROMPT = "You are a helpful assistant."
+SYSTEM_PROMPT = "Your name is McChattie. You are a helpful assistant."
 
 # Simple auth flow
 @cl.password_auth_callback
