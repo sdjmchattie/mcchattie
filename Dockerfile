@@ -15,6 +15,7 @@ RUN uv sync
 
 # Copy the Chainlit app
 COPY .chainlit ./.chainlit
+COPY public ./public
 COPY chainlit.md .
 COPY app.py .
 
