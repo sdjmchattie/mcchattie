@@ -9,6 +9,9 @@ wheels/
 # Virtual environments
 .venv
 
+# MacOS Finder
+.DS_Store
+
 # Claude Code
 .claude/
 
