@@ -17,7 +17,7 @@ RUN uv sync
 COPY .chainlit ./.chainlit
 COPY public ./public
 COPY chainlit.md .
-COPY app.py .
+COPY app.py auth.py chat.py db.py ./
 
 # Expose Chainlit port
 EXPOSE 8000
