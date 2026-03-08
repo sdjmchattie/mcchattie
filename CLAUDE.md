@@ -12,7 +12,8 @@ A Chainlit-based chat interface for the OpenAI API, with password authentication
 
 ## Project Structure
 
-- `app.py` – main application (auth, chat start/resume, message handling)
+- `app.py` – main application (auth, chat start/resume, message handling, startup DB migration)
+- `public/` – static files served by Chainlit; `logo_light.png` and `logo_dark.png` are auto-detected as the app logo
 - `pyproject.toml` / `uv.lock` – dependency management
 - `.chainlit/config.toml` – Chainlit UI and feature configuration
 - `chainlit.md` – welcome screen content
@@ -85,8 +86,22 @@ Managed with `uv`. To add a package:
 uv add <package>
 ```
 
-To update the lock file after editing `pyproject.toml`:
+To upgrade all packages to the latest versions satisfying `pyproject.toml` constraints:
 
 ```bash
+uv lock --upgrade
 uv sync
 ```
+
+To upgrade a single package:
+
+```bash
+uv lock --upgrade-package <package>
+uv sync
+```
+
+After upgrading, update the minimum version floors in `pyproject.toml` to match the new resolved versions, then commit both files.
+
+## Database Migrations
+
+`app.py` runs a lightweight startup migration on every launch (currently: setting a default on `Thread.metadata` to fix a Chainlit 2.6.5 → 2.10.0 schema incompatibility). This pattern is only safe for catalogue-only changes (e.g. `SET DEFAULT`) that complete instantly regardless of table size. Migrations that scan or rewrite the table must be run manually as a separate step before deploying.
