@@ -6,3 +6,4 @@ awslocal s3api \
     --region eu-central-1
 echo '{"CORSRules":[{"AllowedHeaders":["*"],"AllowedMethods":["GET","POST","PUT"],"AllowedOrigins":["*"],"ExposeHeaders":["ETag"]}]}' > cors.json
 awslocal s3api put-bucket-cors --bucket my-bucket --cors-configuration file://cors.json
+awslocal s3api put-bucket-policy --bucket my-bucket --policy '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":"*","Action":"s3:GetObject","Resource":"arn:aws:s3:::my-bucket/*"}]}'
